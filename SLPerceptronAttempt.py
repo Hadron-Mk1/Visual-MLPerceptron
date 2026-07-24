@@ -30,6 +30,31 @@ class SLPerceptronAttempt:
 def threshold():
     pass # 1 means fire 0 otherwise
 
-#P5: Generate testing
+# P5: Generate testing
 if __name__ == "__main__":
     pass
+
+# Generate training data
+
+# Use training data to make 'blobs' in which training/graphing will occur
+# (i.e. utilise the dataset)
+
+# Using the test data we must generate a scatter graph, column 1 is all x coords and column 2 is all y coords
+# In training data
+
+# Make perceptron predictions
+
+# Generate accuracy score for perceptron using y and y-hat and show this to user
+
+# Pick two random x coords in the training data (x coords are xo in eq for decision boundary)
+
+# Generate the respective y coords to plot the decision boundary (use decision boundary eq)
+
+# Plot the decision boundary
+
+# Find the largest and smallest values in the y coordinates of the test training data
+# and use this to set the limits of the graph in the y axis
+
+# Set the limits in the y axis
+
+# Graph is ready to be shown
