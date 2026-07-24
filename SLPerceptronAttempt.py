@@ -1,1 +1,2 @@
-#test
+#SL perceptron Logic
+#---------------------
