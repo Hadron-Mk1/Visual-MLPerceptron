@@ -12,7 +12,11 @@ class SLPerceptronAttempt:
         pass
 
 
-    #P3: creates update bias/weight
+    # P3: creates update bias/weight. Set the weights and bias at the start to default (0 and vector of zeros).
+    # The perceptron is iterated an arbitrary amount of times for the entire dataset.
+    # Within each loop all data is trained through another loop which 'enumerates' through the dataset (a matrice) while keeping
+    # track of an object (the current vector row) and its index (the current row num). The weights are all trained simultaneously using
+    # each iteration of the current enumerated row (the current object). The bias is also altered during this process.
     def train(self):
         pass
 
@@ -23,7 +27,7 @@ class SLPerceptronAttempt:
 
 
 # P2: threshold func for weighted sum - takes in float value to make a binary output
-def step_function():
+def threshold():
     pass # 1 means fire 0 otherwise
 
 #P5: Generate testing
