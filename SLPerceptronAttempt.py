@@ -21,9 +21,9 @@ class SLPerceptronAttempt:
 
 
 
-# P2:
+# P2: threshold func for weighted sum - takes in float value to make a binary output
 def step_function():
-    pass
+    pass # 1 means fire 0 otherwise
 
 #P5: Generate testing
 if __name__ == "__main__":
