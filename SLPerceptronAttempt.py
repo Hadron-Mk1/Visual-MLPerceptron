@@ -20,11 +20,8 @@ class SLPerceptronAttempt:
         else:
             self.learning_rate = learning_rate
 
-        if weights is None:
-            self.weights = []
-
-        if bias is None:
-            self.bias = 0
+        self.weights = weights
+        self.bias = bias
 
 
     # P3: creates update bias/weight. Set the weights and bias at the start to default (0 and vector of zeros).
@@ -34,7 +31,7 @@ class SLPerceptronAttempt:
     # each iteration of the current enumerated row (the current object). The bias is also altered during this process.
     def train(self,x,y):
         self.bias = 0
-        x = numpy.zeros(x.shape)
+        self.weights = numpy.zeros(x.shape[1])
         y = threshold(y)
 
         for iteration in range(self.training_loops):
@@ -44,10 +41,6 @@ class SLPerceptronAttempt:
                 bias_weight_alter = self.learning_rate * (y[index]- y_predicted)
                 self.bias += bias_weight_alter
                 self.weights += bias_weight_alter * object_in_row
-
-
-
-
 
     #P4:creates predicted y (y hat)
     def predict(self,x):
