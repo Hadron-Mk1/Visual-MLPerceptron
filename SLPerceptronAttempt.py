@@ -8,8 +8,16 @@ from sklearn import datasets
 # P1:
 # Learning rate between 0 and 1
 class SLPerceptronAttempt:
-    def __init__(self):
-        pass
+    def __init__(self,training_loops,learning_rate,weights, bias):
+        self.training_loops = training_loops
+        self.learning_rate = learning_rate
+        self.threshold = threshold
+
+        if weights is None:
+            self.weights = []
+
+        if bias is None:
+            self.bias = 0
 
 
     # P3: creates update bias/weight. Set the weights and bias at the start to default (0 and vector of zeros).
@@ -21,14 +29,20 @@ class SLPerceptronAttempt:
         pass
 
     #P4:creates predicted y (y hat)
-    def predict(self):
-        pass
+    def predict(self,x):
+        y_hat_no_threshold = numpy.dot(self.weights,x) + self.bias
+        y_hat = threshold(y_hat_no_threshold)
+        return y_hat
+
 
 
 
 # P2: threshold func for weighted sum - takes in float value to make a binary output
-def threshold():
-    pass # 1 means fire 0 otherwise
+def threshold(x):
+    if x > 0:
+        return 1
+    else:
+        return 0
 
 # P5: Generate testing
 if __name__ == "__main__":
