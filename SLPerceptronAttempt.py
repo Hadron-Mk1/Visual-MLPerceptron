@@ -1,5 +1,6 @@
 #SL perceptron skeleton
 #---------------------
+from random import randrange
 
 import numpy
 import matplotlib.pyplot as plt
@@ -33,9 +34,9 @@ class SLPerceptronAttempt:
     # each iteration of the current enumerated row (the current object). The bias is also altered during this process.
     def train(self,x,y):
         self.bias = 0
-        self.weights = numpy.zeros(x.shape[1])
-        y = threshold(y)
+        self.generate_random_weights(x)
 
+        y = threshold(y)
         for iteration in range(self.training_loops):
             for index,object_in_row in enumerate(x):
                 y_predicted = self.predict(object_in_row)
@@ -50,8 +51,10 @@ class SLPerceptronAttempt:
         y_predicted = threshold(y_predicted_no_threshold)
         return y_predicted
 
-
-
+    def generate_random_weights(self,x):
+        self.weights = [0] * x.shape[1]
+        for index in range(len(self.weights)):
+            self.weights[index] = randrange(-1,1)
 
 # P2: threshold func for weighted sum - takes in float value to make a binary output
 def threshold(x):
