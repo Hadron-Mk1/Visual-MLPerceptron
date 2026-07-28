@@ -3,6 +3,8 @@
 
 import numpy
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import train_test_split
 from sklearn import datasets
 
 # P1:
@@ -44,7 +46,7 @@ class SLPerceptronAttempt:
 
     #P4:creates predicted y (y hat)
     def predict(self,x):
-        y_predicted_no_threshold = numpy.dot(self.weights,x) + self.bias
+        y_predicted_no_threshold = numpy.dot(x,self.weights) + self.bias
         y_predicted = threshold(y_predicted_no_threshold)
         return y_predicted
 
@@ -57,12 +59,47 @@ def threshold(x):
 
 # P5: Generate testing
 if __name__ == "__main__":
+
+    def accuracy(y_hat,y):
+        accuracy = numpy.sum(y_hat == y)/len(y_hat)
+        return accuracy
+
+    X, y = datasets.make_blobs(n_samples=500, n_features=2, centers = 2, cluster_std=1.0, center_box=(-10, 10), random_state=1)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 1)
+
+    perceptron = SLPerceptronAttempt(learning_rate=None,training_loops=None,weights=None,bias=None)
+    perceptron.train(X_train, y_train)
+    predictions = perceptron.predict(X_test)
+
+    print("Perceptron accuracy:",accuracy(predictions,y_test))
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    plt.scatter(X_train[:, 0], X_train[:, 1], marker="o", c=y_train)
+
+    x0_1 = numpy.amin(X_train[:,0])
+    x0_2 = numpy.amax(X_train[:,0])
+
+    x1_1 = (-perceptron.weights[0] * x0_1 - perceptron.bias) / perceptron.weights[1]
+    x1_2 = (-perceptron.weights[0] * x0_2 - perceptron.bias) / perceptron.weights[1]
+
+    ax.plot([x0_1,x0_2],[x1_1,x1_2],'r')
+
+    y_min = numpy.amin(X_train[:,1])
+    y_max = numpy.amax(X_train[:,1])
+    ax.set_ylim([y_min-5,y_max+5])
+
+    plt.show()
+
+    
+
+
     pass
 
 # Generate training data
 
 # Use training data to make 'blobs' in which training/graphing will occur
-# (i.e. utilise the dataset)
+# (i.e. utilise the dataset)-
 
 # Using the test data we must generate a scatter graph, column 1 is all x coords and column 2 is all y coords
 # In training data
