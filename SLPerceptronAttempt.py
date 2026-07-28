@@ -9,9 +9,16 @@ from sklearn import datasets
 # Learning rate between 0 and 1
 class SLPerceptronAttempt:
     def __init__(self,training_loops,learning_rate,weights, bias):
-        self.training_loops = training_loops
-        self.learning_rate = learning_rate
-        self.threshold = threshold
+
+        if training_loops is None:
+            self.training_loops = 100
+        else:
+            self.training_loops = training_loops
+
+        if learning_rate is None:
+            self.learning_rate = 0.01
+        else:
+            self.learning_rate = learning_rate
 
         if weights is None:
             self.weights = []
@@ -25,24 +32,35 @@ class SLPerceptronAttempt:
     # Within each loop all data is trained through another loop which 'enumerates' through the dataset (a matrice) while keeping
     # track of an object (the current vector row) and its index (the current row num). The weights are all trained simultaneously using
     # each iteration of the current enumerated row (the current object). The bias is also altered during this process.
-    def train(self):
-        pass
+    def train(self,x,y):
+        self.bias = 0
+        x = numpy.zeros(x.shape)
+        y = threshold(y)
+
+        for iteration in range(self.training_loops):
+            for index,object_in_row in enumerate(x):
+                y_predicted = self.predict(object_in_row)
+
+                bias_weight_alter = self.learning_rate * (y[index]- y_predicted)
+                self.bias += bias_weight_alter
+                self.weights += bias_weight_alter * object_in_row
+
+
+
+
 
     #P4:creates predicted y (y hat)
     def predict(self,x):
-        y_hat_no_threshold = numpy.dot(self.weights,x) + self.bias
-        y_hat = threshold(y_hat_no_threshold)
-        return y_hat
+        y_predicted_no_threshold = numpy.dot(self.weights,x) + self.bias
+        y_predicted = threshold(y_predicted_no_threshold)
+        return y_predicted
 
 
 
 
 # P2: threshold func for weighted sum - takes in float value to make a binary output
 def threshold(x):
-    if x > 0:
-        return 1
-    else:
-        return 0
+    return numpy.where(x > 0, 1, 0)
 
 # P5: Generate testing
 if __name__ == "__main__":
