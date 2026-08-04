@@ -1,9 +1,14 @@
 import numpy as np
 
 class SLPerceptronAttempt:
-    def __init__(self):
-        pass
+    def __init__(self,input_size,hidden_size,output_size): # Initialise weights and biases
+        # Creates a random number matrices of weights for the inputs and hidden data to be processed with
+        # Biases are started at 0 to be adjusted later
 
+        self.input_weights = np.random.randn(input_size,hidden_size)
+        self.hidden_weights = np.random.randn(hidden_size,output_size)
+        self.input_bias = np.random.randn(hidden_size)
+        self.output_bias = np.random.randn(output_size)
 
 #Function to allow all continuous input to be mapped between 0 or 1
 def sigmoid(value):
