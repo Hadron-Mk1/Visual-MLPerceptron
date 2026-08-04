@@ -1,7 +1,7 @@
 import numpy as np
 
 class SLPerceptronAttempt:
-    def __init__(self,input_size,hidden_size,output_size): # Initialise weights and biases
+    def __init__(self,input_size,hidden_size,output_size,total_layers): # Initialise weights and biases
         # Creates a random number matrices of weights for the inputs and hidden data to be processed with
         # Biases are started at 0 to be adjusted later
 
@@ -10,9 +10,23 @@ class SLPerceptronAttempt:
         self.input_bias = np.random.randn(hidden_size)
         self.output_bias = np.random.randn(output_size)
 
+
+    def forward_propagation(self, x, layer):
+        # Z = WX + B
+        z = np.dot(x, self.weight[layer]) + self.bias[layer]
+        if layer < self.total_layers - 1:
+            # Using reLu mitigates vanishing gradient problem (prevention of lack of self learning)
+            return self.forward_propagation(reLu(z), layer + 1)
+        else:
+            return sigmoid(z)
+
+
 #Function to allow all continuous input to be mapped between 0 or 1
 def sigmoid(value):
     return 1 / (1 + np.exp(-value))
+
+def reLu(value):
+    return np.maximum(0, value)
 
 
 def softmax(vector):
@@ -25,9 +39,6 @@ def softmax(vector):
     probability_vector = probability_no_summation_division / summation_of_exp_vector
 
     return probability_vector
-
-def forward_propagation(z):
-    pass
 
 def backward_propagation(z):
     pass
