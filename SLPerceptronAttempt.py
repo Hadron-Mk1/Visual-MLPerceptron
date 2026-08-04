@@ -77,8 +77,9 @@ if __name__ == "__main__":
     print("Perceptron accuracy:",accuracy(predictions,y_test))
 
     fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
+    ax = fig.add_subplot(2,1,1)
     plt.scatter(X_train[:, 0], X_train[:, 1], marker="o", c=y_train)
+    plt.title("Training Data")
 
     x1 = numpy.amin(X_train[:,0])
     x2 = numpy.amax(X_train[:,0])
@@ -92,12 +93,25 @@ if __name__ == "__main__":
     y_max = numpy.amax(X_train[:,1])
     ax.set_ylim([y_min-5,y_max+5])
 
+    ax = fig.add_subplot(2, 1, 2)
+    plt.scatter(X_test[:, 0], X_test[:, 1], marker="o", c=y_test)
+    plt.title("Test Data")
+
+    x1 = numpy.amin(X_test[:, 0])
+    x2 = numpy.amax(X_test[:, 0])
+
+    y1 = (-perceptron.weights[0] * x1 - perceptron.bias) / perceptron.weights[1]
+    y2 = (-perceptron.weights[0] * x2 - perceptron.bias) / perceptron.weights[1]
+
+    ax.plot([x1, x2], [y1, y2], 'r')
+
+    y_min = numpy.amin(X_test[:, 1])
+    y_max = numpy.amax(X_test[:, 1])
+    ax.set_ylim([y_min - 5, y_max + 5])
+
+    plt.tight_layout()
+
     plt.show()
-
-    
-
-
-    pass
 
 # Generate training data
 
