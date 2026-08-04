@@ -63,77 +63,65 @@ def threshold(x):
 # P5: Generate testing
 if __name__ == "__main__":
 
+    # Generate accuracy score for perceptron using y and y-hat
     def accuracy(y_hat,y):
         accuracy = numpy.sum(y_hat == y)/len(y_hat)
         return accuracy
 
+    # Use training data to make 'blobs' in which training/graphing will occur
     X, y = datasets.make_blobs(n_samples=250, n_features= 2, centers = 2, cluster_std= 1.0, center_box = (-10, 10), random_state = 1)
+    # Split the training data into subsets that can be used for testing and training
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 1)
 
+    # Make perceptron predictions
     perceptron = SLPerceptronAttempt(learning_rate=None,training_loops=None,weights=None,bias=None)
     perceptron.train(X_train, y_train)
     predictions = perceptron.predict(X_test)
 
+    # Shows accuracy to user
     print("Perceptron accuracy:",accuracy(predictions,y_test))
 
+    # Subplot to show results of training data
     fig = plt.figure()
     ax = fig.add_subplot(2,1,1)
     plt.scatter(X_train[:, 0], X_train[:, 1], marker="o", c=y_train)
     plt.title("Training Data")
 
-    x1 = numpy.amin(X_train[:,0])
-    x2 = numpy.amax(X_train[:,0])
+    # Pick two x coords in the training data (x coords are xo in eq for decision boundary)
+    train_x1 = numpy.amin(X_train[:,0])
+    train_x2 = numpy.amax(X_train[:,0])
 
-    y1 = (-perceptron.weights[0] * x1 - perceptron.bias) / perceptron.weights[1]
-    y2 = (-perceptron.weights[0] * x2 - perceptron.bias) / perceptron.weights[1]
+    # Generate the respective y coords to plot the decision boundary (use decision boundary eq)
+    train_y1 = (-perceptron.weights[0] * train_x1 - perceptron.bias) / perceptron.weights[1]
+    train_y2 = (-perceptron.weights[0] * train_x2 - perceptron.bias) / perceptron.weights[1]
 
-    ax.plot([x1,x2],[y1,y2],'r')
+    # Plot the decision boundary
+    ax.plot([train_x1,train_x2],[train_y1,train_y2],'r')
 
-    y_min = numpy.amin(X_train[:,1])
-    y_max = numpy.amax(X_train[:,1])
-    ax.set_ylim([y_min-5,y_max+5])
+    # Find the largest and smallest values in the y coordinates of the test training data
+    # and use this to set the limits of the graph in the y axis
+    train_y_min = numpy.amin(X_train[:,1])
+    train_y_max = numpy.amax(X_train[:,1])
+    ax.set_ylim([train_y_min-5,train_y_max+5])
 
+    # Subplot to show results of test data
     ax = fig.add_subplot(2, 1, 2)
     plt.scatter(X_test[:, 0], X_test[:, 1], marker="o", c=y_test)
     plt.title("Test Data")
 
-    x1 = numpy.amin(X_test[:, 0])
-    x2 = numpy.amax(X_test[:, 0])
+    test_x1 = numpy.amin(X_test[:, 0])
+    test_x2 = numpy.amax(X_test[:, 0])
 
-    y1 = (-perceptron.weights[0] * x1 - perceptron.bias) / perceptron.weights[1]
-    y2 = (-perceptron.weights[0] * x2 - perceptron.bias) / perceptron.weights[1]
+    test_y1 = (-perceptron.weights[0] * test_x1 - perceptron.bias) / perceptron.weights[1]
+    test_y2 = (-perceptron.weights[0] * test_x2 - perceptron.bias) / perceptron.weights[1]
 
-    ax.plot([x1, x2], [y1, y2], 'r')
+    ax.plot([test_x1, test_x2], [test_y1, test_y2], 'r')
 
-    y_min = numpy.amin(X_test[:, 1])
-    y_max = numpy.amax(X_test[:, 1])
-    ax.set_ylim([y_min - 5, y_max + 5])
+    test_y_min = numpy.amin(X_test[:, 1])
+    test_y_max = numpy.amax(X_test[:, 1])
+    ax.set_ylim([test_y_min - 5, test_y_max + 5])
 
     plt.tight_layout()
 
+    # Displays the two subplots for training and test data
     plt.show()
-
-# Generate training data
-
-# Use training data to make 'blobs' in which training/graphing will occur
-# (i.e. utilise the dataset)-
-
-# Using the test data we must generate a scatter graph, column 1 is all x coords and column 2 is all y coords
-# In training data
-
-# Make perceptron predictions
-
-# Generate accuracy score for perceptron using y and y-hat and show this to user
-
-# Pick two random x coords in the training data (x coords are xo in eq for decision boundary)
-
-# Generate the respective y coords to plot the decision boundary (use decision boundary eq)
-
-# Plot the decision boundary
-
-# Find the largest and smallest values in the y coordinates of the test training data
-# and use this to set the limits of the graph in the y axis
-
-# Set the limits in the y axis
-
-# Graph is ready to be shown
