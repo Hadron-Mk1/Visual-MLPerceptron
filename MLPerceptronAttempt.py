@@ -72,9 +72,20 @@ def backward_propagation(self, x, y, learning_rate):
             delta_val = error * sigmoid_deriv(self.z_vals[layer])
         else:
             error = np.dot(delta_val, self.weights[layer + 1].T)
-            #
+            delta_val = error * relu_deriv(self.z_vals[layer])
         delta[layer] = delta_val
 
+    for layer in range(self.total_layers):
+        if layer == 0:
+            prev_output = x
+        else:
+            prev_output = self.z_final_vals[layer - 1]
+
+        # gradient is the multiple of x and delta (x is deriv z/ deriv W and delta is deriv E/ deriv a)
+        # since deriv E/deriv W is split up
+        gradient = np.dot(prev_output, delta[layer])
+        self.weights[layer] -= learning_rate * gradient
+        self.biases[layer] -= learning_rate * np.sum(delta[layer])
     pass
 
 def train():
