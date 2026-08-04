@@ -1,19 +1,27 @@
 import numpy as np
 
-class SLPerceptronAttempt:
-    def __init__(self,input_size,hidden_size,output_size,total_layers): # Initialise weights and biases
+class MLPerceptronAttempt:
+    def __init__(self,input_size,hidden_size,output_size): # Initialise weights and biases
         # Creates a random number matrices of weights for the inputs and hidden data to be processed with
         # Biases are started at 0 to be adjusted later
 
-        self.input_weights = np.random.randn(input_size,hidden_size)
-        self.hidden_weights = np.random.randn(hidden_size,output_size)
-        self.input_bias = np.random.randn(hidden_size)
+        self.hidden_weights_one = np.random.randn(input_size,hidden_size)
+        self.hidden_weights_two = np.random.randn(hidden_size,hidden_size)
+        self.output_weights = np.random.randn(hidden_size,output_size)
+
+        self.hidden_bias_one = np.random.randn(hidden_size)
+        self.hidden_bias_two = np.random.randn(hidden_size)
         self.output_bias = np.random.randn(output_size)
 
+        self.total_layers = 3
+
+        self.weights = [self.hidden_weights_one,self.hidden_weights_two, self.output_weights]
+        self.biases = [self.hidden_bias_one,self.hidden_bias_two, self.output_bias]
 
     def forward_propagation(self, x, layer):
         # Z = WX + B
-        z = np.dot(x, self.weight[layer]) + self.bias[layer]
+        z = np.dot(x, self.weights[layer]) + self.biases[layer]
+
         if layer < self.total_layers - 1:
             # Using reLu mitigates vanishing gradient problem (prevention of lack of self learning)
             return self.forward_propagation(reLu(z), layer + 1)
