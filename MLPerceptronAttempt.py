@@ -40,7 +40,7 @@ class MLPerceptronAttempt:
 
         delta = np.zeros(self.total_layers)
         error = self.z_final_vals[2] - y
-        self.create_propagation_delta(delta,0,self.total_layers,error)
+        self.initialise_propagation_delta(delta,0,self.total_layers,error)
 
         for layer in range(self.total_layers):
             if layer == 0:
@@ -54,18 +54,18 @@ class MLPerceptronAttempt:
             self.weights[layer] -= learning_rate * gradient
             self.biases[layer] -= learning_rate * np.sum(delta[layer])
 
-    def create_propagation_delta(self, delta, delta_val, layer, error):
+    def initialise_propagation_delta(self, delta, delta_val, layer, error):
 
         if layer == self.total_layers - 1:
             delta[layer] = error * sigmoid_deriv(self.z_vals[layer])
 
-            self.create_propagation_delta(delta, delta[layer], layer - 1, delta[layer])
+            self.initialise_propagation_delta(delta, delta[layer], layer - 1, delta[layer])
 
         elif 0 <= layer < self.total_layers - 1:
             error = np.dot(delta_val, self.weights[layer + 1].T)
             delta[layer] = error * relu_deriv(self.z_vals[layer])
 
-            self.create_propagation_delta(delta, delta[layer], layer - 1, error)
+            self.initialise_propagation_delta(delta, delta[layer], layer - 1, error)
 
 
 #Function to allow all continuous input to be mapped between 0 or 1
