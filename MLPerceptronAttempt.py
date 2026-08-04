@@ -35,6 +35,38 @@ class MLPerceptronAttempt:
             self.z_final_vals.append(sigmoid(z))
             return sigmoid(z)
 
+    def backward_propagation(self, x, y, learning_rate):
+        # Works out error and how much the weight contributes to the error for later adjustment
+
+        delta = np.zeros(self.total_layers)
+        error = self.z_final_vals[2] - y
+        self.create_propagation_delta(delta,0,self.total_layers,error)
+
+        for layer in range(self.total_layers):
+            if layer == 0:
+                prev_output = x
+            else:
+                prev_output = self.z_final_vals[layer - 1]
+
+            # gradient is the multiple of x and delta (x is deriv z/ deriv W and delta is deriv E/ deriv a)
+            # since deriv E/deriv W is split up
+            gradient = np.dot(prev_output, delta[layer])
+            self.weights[layer] -= learning_rate * gradient
+            self.biases[layer] -= learning_rate * np.sum(delta[layer])
+
+    def create_propagation_delta(self, delta, delta_val, layer, error):
+
+        if layer == self.total_layers - 1:
+            delta[layer] = error * sigmoid_deriv(self.z_vals[layer])
+
+            self.create_propagation_delta(delta, delta[layer], layer - 1, delta[layer])
+
+        elif 0 <= layer < self.total_layers - 1:
+            error = np.dot(delta_val, self.weights[layer + 1].T)
+            delta[layer] = error * relu_deriv(self.z_vals[layer])
+
+            self.create_propagation_delta(delta, delta[layer], layer - 1, error)
+
 
 #Function to allow all continuous input to be mapped between 0 or 1
 def sigmoid(value):
@@ -44,7 +76,7 @@ def reLu(value):
     return np.maximum(0, value)
 
 def sigmoid_deriv(value):
-    return (sigmoid(value)*(1-sigmoid(value)))
+    return sigmoid(value)*(1 - sigmoid(value))
 
 def relu_deriv(value):
     return value > 0
@@ -60,33 +92,6 @@ def softmax(vector):
     probability_vector = probability_no_summation_division / summation_of_exp_vector
 
     return probability_vector
-
-def backward_propagation(self, x, y, learning_rate):
-    # Works out error and how much the weight contributes to the error for later adjustment
-
-    delta = [None] * self.total_layers
-    error = self.z_final_vals[2] - y
-
-    for layer in reversed(range(self.total_layers)):
-        if layer == 2:
-            delta_val = error * sigmoid_deriv(self.z_vals[layer])
-        else:
-            error = np.dot(delta_val, self.weights[layer + 1].T)
-            delta_val = error * relu_deriv(self.z_vals[layer])
-        delta[layer] = delta_val
-
-    for layer in range(self.total_layers):
-        if layer == 0:
-            prev_output = x
-        else:
-            prev_output = self.z_final_vals[layer - 1]
-
-        # gradient is the multiple of x and delta (x is deriv z/ deriv W and delta is deriv E/ deriv a)
-        # since deriv E/deriv W is split up
-        gradient = np.dot(prev_output, delta[layer])
-        self.weights[layer] -= learning_rate * gradient
-        self.biases[layer] -= learning_rate * np.sum(delta[layer])
-    pass
 
 def train():
     pass
