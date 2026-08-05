@@ -1,7 +1,10 @@
 import numpy as np
+from sklearn.datasets import fetch_openml
+import matplotlib.pyplot as plt
+import random
 
 class MLPerceptronAttempt:
-    def __init__(self,input_size,hidden_size,output_size): # Initialise weights and biases
+    def __init__(self,input_size,hidden_size,output_size,training_loops): # Initialise weights and biases
         # Creates a random number matrices of weights for the inputs and hidden data to be processed with
         # Biases are started at 0 to be adjusted later
         # Weights and bias created for each layer
@@ -22,8 +25,10 @@ class MLPerceptronAttempt:
         self.z_vals = []
         self.z_final_vals = []
 
-    def forward_propagation(self, x, layer):
+        self.training_loops = training_loops
 
+
+    def forward_propagation(self, x, layer):
         if layer == 0:
             self.z_vals = []
             self.z_final_vals = []
@@ -41,6 +46,7 @@ class MLPerceptronAttempt:
             activation_num = softmax(z)
             self.z_final_vals.append(activation_num)
             return activation_num
+
 
     def backward_propagation(self, x, y, learning_rate):
         # Works out error and how much the weight contributes to the error for later adjustment
@@ -68,6 +74,19 @@ class MLPerceptronAttempt:
             self.weights[layer] -= learning_rate * gradient
             self.biases[layer] -= learning_rate * delta[layer]
 
+
+    def train(self, dataset, learning_rate):
+        for loop in range(self.training_loops):
+            for image, label in dataset:
+                prediction = np.argmax(self.forward_propagation(image, 0))
+
+                if prediction == np.argmax(label):
+                    print("Correctly Guessed")
+                else:
+                    print("Incorrectly Guessed")
+
+                self.backward_propagation(image, label, learning_rate)
+
 def reLu(value):
     return np.maximum(0, value)
 
@@ -84,9 +103,3 @@ def softmax(vector):
     probability_vector = probability_no_summation_division / summation_of_exp_vector
 
     return probability_vector
-
-def train():
-    pass
-
-def predict():
-    pass
