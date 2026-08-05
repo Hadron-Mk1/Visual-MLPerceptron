@@ -23,24 +23,38 @@ class MLPerceptronAttempt:
         self.z_final_vals = []
 
     def forward_propagation(self, x, layer):
+
+        if layer == 0:
+            self.z_vals = []
+            self.z_final_vals = []
+
         # Z = WX + B
         z = np.dot(x, self.weights[layer]) + self.biases[layer]
         self.z_vals.append(z)
 
         if layer < self.total_layers - 1:
             # Using reLu mitigates vanishing gradient problem (prevention of lack of self learning)
-            self.z_final_vals.append(reLu(z))
-            return self.forward_propagation(reLu(z), layer + 1)
+            activation_num = reLu(z)
+            self.z_final_vals.append(activation_num)
+            return self.forward_propagation(activation_num, layer + 1)
         else:
-            self.z_final_vals.append(sigmoid(z))
-            return sigmoid(z)
+            activation_num = softmax(z)
+            self.z_final_vals.append(activation_num)
+            return activation_num
 
     def backward_propagation(self, x, y, learning_rate):
         # Works out error and how much the weight contributes to the error for later adjustment
 
-        delta = np.zeros(self.total_layers)
+        delta = [None] * self.total_layers
         error = self.z_final_vals[2] - y
-        self.initialise_propagation_delta(delta,0,self.total_layers,error)
+
+        for layer in reversed(range(self.total_layers)):
+            if layer == 2:
+                delta_val = error
+            else:
+                error = np.dot(delta_val, self.weights[layer + 1].T)
+                delta_val = error * relu_deriv(self.z_vals[layer])
+            delta[layer] = delta_val
 
         for layer in range(self.total_layers):
             if layer == 0:
@@ -50,44 +64,22 @@ class MLPerceptronAttempt:
 
             # gradient is the multiple of x and delta (x is deriv z/ deriv W and delta is deriv E/ deriv a)
             # since deriv E/deriv W is split up
-            gradient = np.dot(prev_output, delta[layer])
+            gradient = np.outer(prev_output, delta[layer])
             self.weights[layer] -= learning_rate * gradient
-            self.biases[layer] -= learning_rate * np.sum(delta[layer])
-
-    def initialise_propagation_delta(self, delta, delta_val, layer, error):
-
-        if layer == self.total_layers - 1:
-            delta[layer] = error * sigmoid_deriv(self.z_vals[layer])
-
-            self.initialise_propagation_delta(delta, delta[layer], layer - 1, delta[layer])
-
-        elif 0 <= layer < self.total_layers - 1:
-            error = np.dot(delta_val, self.weights[layer + 1].T)
-            delta[layer] = error * relu_deriv(self.z_vals[layer])
-
-            self.initialise_propagation_delta(delta, delta[layer], layer - 1, error)
-
-
-#Function to allow all continuous input to be mapped between 0 or 1
-def sigmoid(value):
-    return 1 / (1 + np.exp(-value))
+            self.biases[layer] -= learning_rate * delta[layer]
 
 def reLu(value):
     return np.maximum(0, value)
 
-def sigmoid_deriv(value):
-    return sigmoid(value)*(1 - sigmoid(value))
-
 def relu_deriv(value):
     return value > 0
-
 
 def softmax(vector):
     #Preventing exponential modifiers from becoming too large by enuring a range of -x to 0
     vector_adjusted = vector - np.max(vector)
     #All vector values are now in their exponential form
     probability_no_summation_division = np.exp(vector_adjusted)
-    summation_of_exp_vector = sum(probability_no_summation_division)
+    summation_of_exp_vector = np.sum(probability_no_summation_division)
     #Dividing each vector value by the sum of all vector values to create a probability distribution
     probability_vector = probability_no_summation_division / summation_of_exp_vector
 
