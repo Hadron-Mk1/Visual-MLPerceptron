@@ -103,3 +103,29 @@ def softmax(vector):
     probability_vector = probability_no_summation_division / summation_of_exp_vector
 
     return probability_vector
+
+if __name__ == "__main__":
+    # MNIST - collection of handwritten digits (0-9)
+    mnist = fetch_openml('mnist_784')
+
+    # Data is the actual img and digit is the number that represents
+    data = np.array(mnist.data, dtype=float)
+    digits = np.array(mnist.target, dtype=int)
+
+    # Normalise pixel vals as it holds 0-255
+    # Wx + b can be unreliable with larger values
+    x = data/255.0
+
+    # One-hot code labels - error = self.z_final_vals[2] - y requires y to be row of 10
+    y = np.zeros((digits.size,10))
+    y[np.arange(digits.size), digits] = 1
+
+    # Create training data
+    dataset = list(zip(x, y))
+
+    perceptron = MLPerceptronAttempt(input_size=784, hidden_size=50, output_size=10, training_loops=10)
+
+    perceptron.train(dataset, learning_rate=0.01)
+
+    # Make graph?
+
