@@ -3,24 +3,29 @@ from sklearn.datasets import fetch_openml
 import matplotlib.pyplot as plt
 import random
 
+from sklearn.metrics import accuracy_score
+
+
 class MLPerceptronAttempt:
     def __init__(self,input_size,hidden_size,output_size,training_loops): # Initialise weights and biases
         # Creates a random number matrices of weights for the inputs and hidden data to be processed with
         # Biases are started at 0 to be adjusted later
         # Weights and bias created for each layer
 
-        self.hidden_weights_one = np.random.randn(input_size,hidden_size)
-        self.hidden_weights_two = np.random.randn(hidden_size,hidden_size)
-        self.output_weights = np.random.randn(hidden_size,output_size)
+        self.hidden_weights_one = np.random.randn(input_size,hidden_size)*0.01
+        self.hidden_weights_two = np.random.randn(hidden_size,hidden_size)*0.01
+        self.hidden_weights_three = np.random.randn(hidden_size, hidden_size) * 0.01
+        self.output_weights = np.random.randn(hidden_size,output_size)*0.01
 
-        self.hidden_bias_one = np.random.randn(hidden_size)
-        self.hidden_bias_two = np.random.randn(hidden_size)
-        self.output_bias = np.random.randn(output_size)
+        self.hidden_bias_one = np.zeros(hidden_size)
+        self.hidden_bias_two = np.zeros(hidden_size)
+        self.hidden_bias_three = np.zeros(hidden_size)
+        self.output_bias = np.zeros(output_size)
 
-        self.total_layers = 3
+        self.total_layers = 4
 
-        self.weights = [self.hidden_weights_one,self.hidden_weights_two, self.output_weights]
-        self.biases = [self.hidden_bias_one,self.hidden_bias_two, self.output_bias]
+        self.weights = [self.hidden_weights_one,self.hidden_weights_two,self.hidden_weights_three, self.output_weights]
+        self.biases = [self.hidden_bias_one,self.hidden_bias_two, self.hidden_bias_three, self.output_bias]
 
         self.z_vals = []
         self.z_final_vals = []
@@ -52,10 +57,10 @@ class MLPerceptronAttempt:
         # Works out error and how much the weight contributes to the error for later adjustment
 
         delta = [None] * self.total_layers
-        error = self.z_final_vals[2] - y
+        error = self.z_final_vals[3] - y
 
         for layer in reversed(range(self.total_layers)):
-            if layer == 2:
+            if layer == 3:
                 delta_val = error
             else:
                 error = np.dot(delta_val, self.weights[layer + 1].T)
@@ -76,16 +81,21 @@ class MLPerceptronAttempt:
 
 
     def train(self, dataset, learning_rate):
+        accuracy_list = []
         for loop in range(self.training_loops):
+            correct = 0
             for image, label in dataset:
                 prediction = np.argmax(self.forward_propagation(image, 0))
 
                 if prediction == np.argmax(label):
-                    print("Correctly Guessed")
-                else:
-                    print("Incorrectly Guessed")
+                    correct += 1
 
                 self.backward_propagation(image, label, learning_rate)
+
+            accuracy = correct / len(dataset)
+            accuracy_list.append(accuracy)
+        return accuracy_list
+
 
 def reLu(value):
     return np.maximum(0, value)
@@ -106,26 +116,56 @@ def softmax(vector):
 
 if __name__ == "__main__":
     # MNIST - collection of handwritten digits (0-9)
-    mnist = fetch_openml('mnist_784')
+    fashion = fetch_openml('Fashion-MNIST')
 
     # Data is the actual img and digit is the number that represents
-    data = np.array(mnist.data, dtype=float)
-    digits = np.array(mnist.target, dtype=int)
+    data = np.array(fashion.data, dtype=float)
+    clothes_list = np.array(fashion.target, dtype=int)
 
     # Normalise pixel vals as it holds 0-255
     # Wx + b can be unreliable with larger values
     x = data/255.0
 
     # One-hot code labels - error = self.z_final_vals[2] - y requires y to be row of 10
-    y = np.zeros((digits.size,10))
-    y[np.arange(digits.size), digits] = 1
+    y = np.zeros((clothes_list.size, 10))
+    y[np.arange(clothes_list.size), clothes_list] = 1
 
     # Create training data
     dataset = list(zip(x, y))
 
-    perceptron = MLPerceptronAttempt(input_size=784, hidden_size=50, output_size=10, training_loops=10)
+    perceptron = MLPerceptronAttempt(input_size=784, hidden_size=50, output_size=10, training_loops=20)
 
-    perceptron.train(dataset, learning_rate=0.01)
+    accuracy_scores = perceptron.train(dataset[:20000], learning_rate=0.01)
+    plt.plot(range(1, len(accuracy_scores)+1), accuracy_scores)
+    plt.xticks(range(0, len(accuracy_scores)+1,2))
+    plt.yticks(np.arange(0, max(accuracy_scores)+0.1,0.1))
+    plt.title("Accuracy score of each training loop")
+    plt.xlabel('Number of training loops')
+    plt.ylabel('Accuracy')
+    plt.show()
 
-    # Make graph?
+    clothes = [
+        "T-shirt",
+        "Trouser",
+        "Pullover",
+        "Dress",
+        "Coat",
+        "Sandal",
+        "Shirt",
+        "Sneaker",
+        "Bag",
+        "Boots"
+    ]
+
+    for i in range(3):
+        random_number = random.randint(0, len(x))
+        image = x[random_number]
+
+        prediction = np.argmax(perceptron.forward_propagation(image, 0))
+        actual = np.argmax(y[random_number])
+
+        plt.imshow(image.reshape(28, 28), cmap="inferno")
+        plt.title(f"Pred: {clothes[prediction]}       Actual: {clothes[actual]}", pad = 10)
+        plt.axis("off")
+        plt.show()
 
