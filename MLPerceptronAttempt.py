@@ -3,19 +3,16 @@ from sklearn.datasets import fetch_openml
 import matplotlib.pyplot as plt
 import random
 
-from sklearn.metrics import accuracy_score
-
-
 class MLPerceptronAttempt:
-    def __init__(self,input_size,hidden_size,output_size,training_loops): # Initialise weights and biases
-        # Creates a random number matrices of weights for the inputs and hidden data to be processed with
-        # Biases are started at 0 to be adjusted later
-        # Weights and bias created for each layer
+    """
+    MLP Class, used to create a multi-layer perceptron capable of learning and recognising context and images
+    """
+    def __init__(self,input_size,hidden_size,output_size,training_loops):
 
-        self.hidden_weights_one = np.random.randn(input_size,hidden_size)*0.01
-        self.hidden_weights_two = np.random.randn(hidden_size,hidden_size)*0.01
-        self.hidden_weights_three = np.random.randn(hidden_size, hidden_size) * 0.01
-        self.output_weights = np.random.randn(hidden_size,output_size)*0.01
+        self.hidden_weights_one = np.random.randn(input_size,hidden_size)*0.05
+        self.hidden_weights_two = np.random.randn(hidden_size,hidden_size)*0.05
+        self.hidden_weights_three = np.random.randn(hidden_size, hidden_size) * 0.05
+        self.output_weights = np.random.randn(hidden_size,output_size)*0.05
 
         self.hidden_bias_one = np.zeros(hidden_size)
         self.hidden_bias_two = np.zeros(hidden_size)
@@ -34,6 +31,12 @@ class MLPerceptronAttempt:
 
 
     def forward_propagation(self, x, layer):
+        """
+        Propagates an input through the network to produce a prediction
+        :param x: The input to the perceptron
+        :param layer: The layer to be trained
+        :return: The predicted label
+        """
         if layer == 0:
             self.z_vals = []
             self.z_final_vals = []
@@ -43,7 +46,6 @@ class MLPerceptronAttempt:
         self.z_vals.append(z)
 
         if layer < self.total_layers - 1:
-            # Using reLu mitigates vanishing gradient problem (prevention of lack of self learning)
             activation_num = reLu(z)
             self.z_final_vals.append(activation_num)
             return self.forward_propagation(activation_num, layer + 1)
@@ -54,8 +56,14 @@ class MLPerceptronAttempt:
 
 
     def backward_propagation(self, x, y, learning_rate):
+        """
+        Used to adjust the weights and bias of the perceptron
+        :param x: The input to the perceptron
+        :param y: The label of the input to the perceptron
+        :param learning_rate: The rate of learning
+        :return:
+        """
         # Works out error and how much the weight contributes to the error for later adjustment
-
         delta = [None] * self.total_layers
         error = self.z_final_vals[3] - y
 
@@ -81,6 +89,12 @@ class MLPerceptronAttempt:
 
 
     def train(self, dataset, learning_rate):
+        """
+        Used to train the perceptron
+        :param dataset: The dataset to be trained on
+        :param learning_rate: The rate of learning
+        :return: A list of accurate guesses to draw and present to the user
+        """
         accuracy_list = []
         for loop in range(self.training_loops):
             correct = 0
@@ -92,18 +106,35 @@ class MLPerceptronAttempt:
 
                 self.backward_propagation(image, label, learning_rate)
 
+            print("Training loop " + str(loop + 1)+" complete")
+
             accuracy = correct / len(dataset)
             accuracy_list.append(accuracy)
         return accuracy_list
 
 
 def reLu(value):
+    """
+    Applies reLu function to mitigate vanishing gradient problem
+    :param value: The value to apply the function to
+    :return: A value of 0 or greater
+    """
     return np.maximum(0, value)
 
 def relu_deriv(value):
+    """
+    Outputs true or false depending on the value input
+    :param value: the value input into the function
+    :return: True if value > 0 or false if value <= 0
+    """
     return value > 0
 
 def softmax(vector):
+    """
+    A function that takes in a standard vector and outputs a probability vector of the input param
+    :param vector: The vector you would like a probability distribution of
+    :return: A probability vector
+    """
     #Preventing exponential modifiers from becoming too large by enuring a range of -x to 0
     vector_adjusted = vector - np.max(vector)
     #All vector values are now in their exponential form
@@ -116,7 +147,7 @@ def softmax(vector):
 
 if __name__ == "__main__":
     # MNIST - collection of handwritten digits (0-9)
-    fashion = fetch_openml('Fashion-MNIST')
+    fashion = fetch_openml('Fashion-MNIST',version = 1, as_frame = False,parser='liac-arff')
 
     # Data is the actual img and digit is the number that represents
     data = np.array(fashion.data, dtype=float)
@@ -135,7 +166,7 @@ if __name__ == "__main__":
 
     perceptron = MLPerceptronAttempt(input_size=784, hidden_size=50, output_size=10, training_loops=20)
 
-    accuracy_scores = perceptron.train(dataset[:20000], learning_rate=0.01)
+    accuracy_scores = perceptron.train(dataset[:10000], learning_rate=0.01)
     plt.plot(range(1, len(accuracy_scores)+1), accuracy_scores)
     plt.xticks(range(0, len(accuracy_scores)+1,2))
     plt.yticks(np.arange(0, max(accuracy_scores)+0.1,0.1))
@@ -158,7 +189,7 @@ if __name__ == "__main__":
     ]
 
     for i in range(3):
-        random_number = random.randint(0, len(x))
+        random_number = random.randint(0, len(x) - 1)
         image = x[random_number]
 
         prediction = np.argmax(perceptron.forward_propagation(image, 0))
