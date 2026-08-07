@@ -87,7 +87,7 @@ if __name__ == "__main__":
         return accuracy
 
     # Use training data to make 'blobs' in which training/graphing will occur
-    X, y = datasets.make_blobs(n_samples=250, n_features= 2, centers = 2, cluster_std= 1.0, center_box = (-10, 10),
+    X, y = datasets.make_blobs(n_samples=100, n_features= 2, centers = 2, cluster_std= 1.0, center_box = (-10, 10),
                                random_state = 1)
 
     # Split the training data into subsets that can be used for testing and training

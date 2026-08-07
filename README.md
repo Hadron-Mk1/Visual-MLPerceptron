@@ -1,9 +1,28 @@
 # Neural Network From Scratch
+
 ---
-## Talk about how we knew little python and how we wanted to 'push our boundaries'
 
-## Explain the thought process of transitioning from SL perceptron to ML perceptron and the challenges
+![Screenshot](images/SLPerceptron.png)
 
+## Why we chose to make a Perceptron
+We both had limited previous experience in Python so we decided to create and develop a single and multi-layer 
+perceptron.
+This would allow us to push our boundaries as well as build upon knowledge that we had gained in 
+our Artificial Intelligence module where we were introduced to the concept of machine learning and its origins.
+
+
+## Single-Layer to Multi-Layer
+
+A single-layer perceptron was what we attempted first as this would be able to provide the fundamentals of the
+perceptron such as weights and biases. This gave us a better understanding of how the learning process worked and how 
+this could be applied to a multi-layer network where additional layers are used to abstract and learn more complex 
+relationships between data
+
+The multi-layer perceptron did create more challenges as we had to adapt weights and biases so that they were
+suitable to be passed through multiple layers. This required more understanding of the equations that perceptrons use
+to learn and added complexity through the addition of forward and backward propagation and error correction.
+
+---
 
 This Python project explores the fundamentals of neural networks by implementing them from scratch using NumPy.
 
