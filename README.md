@@ -1,10 +1,11 @@
 # Neural Network From Scratch
 
 ---
+| Single-Layer Perceptron                | Multi-Layer Perceptron            |
+|:---------------------------------------|:----------------------------------|
+| ![Screenshot](images/SLPerceptron.png) | ![Screenshot](images/Trainer.png) |
 
-![Screenshot](images/SLPerceptron.png)
-
-## Why we chose to make a Perceptron
+## Why we chose to make an SL and ML Perceptron
 We both had limited previous experience in Python so we decided to create and develop a single and multi-layer 
 perceptron.
 This would allow us to push our boundaries as well as build upon knowledge that we had gained in 
@@ -101,14 +102,19 @@ to predict clothing names.
 
 ---
 ### Screenshots
-![Screenshot](images/MLPerceptron_10Loops.png)
-![Screenshot](images/MLPerceptron_20Loops.png)
+| 10 Layer Accuracy Graph                        | 20 Layer Accuracy Graph                        |
+|:-----------------------------------------------|:-----------------------------------------------|
+| ![Screenshot](images/MLPerceptron_10Loops.png) | ![Screenshot](images/MLPerceptron_20Loops.png) |
+
 
 These graphs show the accuracy achieved with 10 and 20 training loops with each loop's corresponding accuracy score.
 The results show that increasing from 10 to 20 training loops resulted in a higher resulting accuracy.
 
-![Screenshot](images/Dress.png)
-![Screenshot](images/Trousers.png)
+
+| Coat Image Recognition         | Dress Image Recognition         |
+|:-------------------------------|:--------------------------------|
+| ![Screenshot](images/Coat.png) | ![Screenshot](images/Dress.png) |
+
 These are randomly selected images taken from the dataset that are used to test the perceptron's predictions.
 As shown above, the perceptron correctly identified the labels for these images.
 ---
