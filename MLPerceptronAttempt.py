@@ -178,14 +178,14 @@ if __name__ == "__main__":
     clothes = [
         "T-shirt",
         "Trouser",
-        "Pullover",
+        "Jumper",
         "Dress",
         "Coat",
         "Sandal",
         "Shirt",
-        "Sneaker",
+        "Trainer",
         "Bag",
-        "Boots"
+        "Boot"
     ]
 
     for i in range(3):
